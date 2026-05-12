@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Frag.OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="Images/icon.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style> 
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{font-family:'Inter',sans-serif;}
+
+/* BACKGROUND SYSTEM */
+.bg-main,.bg-fade{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background-size:cover;
+  background-position:center;
+  z-index:-2;
+  transition:opacity 0.6s ease, transform 3s ease;
+  transform:scale(1);
+}
+
+.bg-fade{opacity:0;z-index:-1;}
+
+.bg-main.active,.bg-fade.active{
+  transform:scale(1.05);
+}
+
+/* INTRO */
+/* UPDATED INTRO SECTION */
+.intro {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: white;
+  transition: 3s;
+  text-align: center;
+  padding: 20px;
+}
+
+.intro h1 {
+  font-family: 'Playfair Display', serif;
+  /* Use 'vw' so it fills the screen width */
+  font-size: 12vw; 
+  font-weight: 900; /* Extra Bold */
+  line-height: 0.9;
+  letter-spacing: -0.03em; /* Tight letter spacing for luxury look */
+  margin: 0;
+  color: #1a1a1a;
+  /* Subtle shadow for depth */
+  text-shadow: 2px 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Make sure the green dot stands out */
+.green {
+  color: #2e8b57;
+  font-weight: 900;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 600px) {
+  .intro h1 { font-size: 20vw; }
+  .tagline { font-size: 1rem; }
+}
+
+/* APP */
+.app{display:none;min-height:100vh;justify-content:center;align-items:center;}
+
+/* CONTAINER */
+.container{
+  width:550px;margin:10px;
+  background:rgba(255,255,255,0.95);
+  padding:40px;border-radius:30px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+button:hover {
+  box-shadow: 0 4px 8px rgb(2, 96, 58);
+}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:30px;}
+.header h1{font-family:'Playfair Display';font-size:2.5rem;}
+.header p{color:#666;margin-top:8px;}
+
+/* PROGRESS */
+.progress-wrapper{position:relative;margin-bottom:40px;}
+.progress-bg{
+  position:absolute;top:18px;left:5%;
+  width:90%;height:3px;background:#ddd;
+}
+.progress-fill{
+  position:absolute;top:18px;left:5%;
+  width:0%;height:3px;background:#2e8b57;
+  transition:0.4s;
+}
+.steps{display:flex;justify-content:space-between;}
+.step{
+  width:36px;height:36px;border-radius:50%;
+  background:#eee;display:flex;align-items:center;justify-content:center;
+  z-index:2;
+}
+.step.active,.step.done{background:#2e8b57;color:white;}
+
+/* QUESTIONS */
+.question{display:none;}
+.question.active{display:block;}
+
+.options{
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;margin-top:20px;
+}
+
+.options button{
+  width:260px;height:55px;
+  border-radius:30px;border:1px solid #ccc;
+  background:white;cursor:pointer;
+  transition:0.2s;
+}
+.options button:hover{background:#f2f2f2;}
+.options button.selected{
+  border:2px solid #2e8b57;
+  background:#eaf7f0;
+}
+
+/* ACTIONS */
+.actions{
+  margin-top:30px;
+  display:flex;
+  justify-content:space-between;
+}
+.actions button{
+  padding:8px 18px;border:none;
+  border-radius:20px;background:#ddd;
+  cursor:pointer;
+}
+
+/* RESULT */
+.result{
+  display:none;text-align:center;margin-top:30px;
+}
+.result button{
+  margin-top:15px;padding:8px 18px;
+  border:none;border-radius:20px;
+  background:#2e8b57;color:white;cursor:pointer;
+}
+
+/* 🔥 RESULT CARDS (ADDED ONLY) */
+.result-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:flex-start;
+  gap:25px;
+}
+
+.card{
+  width:200px;   /* 🔥 fixed size */
+  background:white;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  text-align:center;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-6px);
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:15px;
+}
+
+.card h4{
+  margin:10px 0 5px;
+}
+
+.card p{
+  color:#666;
+  font-size:0.9rem;
+}
+
+</style
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div id="bgMain" class="bg-main active"></div>
+<div id="bgFade" class="bg-fade"></div>
+
+<!-- INTRO -->
+<div class="intro" id="intro">
+  <h1>Frag<span class="green">.OS</span></h1>
+  <br>
+  <div class="tagline">Built to analyze your taste and deliver fragrances tailored just for you</div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+<div class="container">
+
+<div class="header">
+<h1>Frag<span class="green">.OS</span></h1>
+<p>Let’s find the perfume that suits you...</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrapper">
+<div class="progress-bg"></div>
+<div class="progress-fill" id="progress"></div>
+
+<div class="steps">
+<div class="step active" id="step1">1</div>
+<div class="step" id="step2">2</div>
+<div class="step" id="step3">3</div>
+<div class="step" id="step4">4</div>
+<div class="step" id="step5">5</div>
+</div>
+</div>
+
+<!-- QUESTIONS -->
+<div class="question active" id="q1">
+<h3>GENDER</h3>
+<div class="options">
+<button onmouseover="bg(imgs.male)" onclick="selectOption(this,1,'male')">👨 Male</button>
+<button onmouseover="bg(imgs.female)" onclick="selectOption(this,1,'female')">👩 Female</button>
+</div>
+</div>
+
+<div class="question" id="q2">
+<h3>YOUR AGE</h3>
+<div class="options">
+<button onmouseover="bg(imgs.teen)" onclick="selectOption(this,2,'teen')">🎒 Teen</button>
+<button onmouseover="bg(imgs.young)" onclick="selectOption(this,2,'young')">🧑 Young Adult</button>
+<button onmouseover="bg(imgs.adult)" onclick="selectOption(this,2,'adult')">👔 Adult</button>
+</div>
+</div>
+
+<div class="question" id="q3">
+<h3>WHERE WILL YOU WEAR IT?</h3>
+<div class="options">
+<button onmouseover="bg(imgs.casual)" onclick="selectOption(this,3,'casual')">🌿 Casual Daily Wear</button>
+<button onmouseover="bg(imgs.school)" onclick="selectOption(this,3,'school')">🎒 School / College</button>
+<button onmouseover="bg(imgs.office)" onclick="selectOption(this,3,'office')">🏢 Office</button>
+<button onmouseover="bg(imgs.date)" onclick="selectOption(this,3,'date')">❤️ Date</button>
+<button onmouseover="bg(imgs.party)" onclick="selectOption(this,3,'party')">🎉 Party</button>
+</div>
+</div>
+
+<div class="question" id="q4">
+<h3>ChOOSE NOTE YOU LIKE </h3>
+<div class="options">
+<button onmouseover="bg(imgs.aqua)" onclick="selectOption(this,4,'aqua')">🌊 Aqua</button>
+<button onmouseover="bg(imgs.citrus)" onclick="selectOption(this,4,'citrus')">🍋 Citrus</button>
+<button onmouseover="bg(imgs.woody)" onclick="selectOption(this,4,'woody')">🌳 Woody</button>
+<button onmouseover="bg(imgs.oud)" onclick="selectOption(this,4,'oud')">🔥 Oud</button>
+<button onmouseover="bg(imgs.floral)" onclick="selectOption(this,4,'floral')">🌸 Floral</button>
+</div>
+</div>
+
+<div class="question" id="q5">
+<h3>CURRENT SEASON</h3>
+<div class="options">
+<button onmouseover="bg(imgs.summer)" onclick="selectOption(this,5,'summer'); finish()">🌞 Summer</button>
+<button onmouseover="bg(imgs.winter)" onclick="selectOption(this,5,'winter'); finish()">❄️ Winter</button>
+<button onmouseover="bg(imgs.rainy)" onclick="selectOption(this,5,'rainy'); finish()">🌧 Rainy</button>
+<button onmouseover="bg(imgs.spring)" onclick="selectOption(this,5,'spring'); finish()">🌼 Spring</button>
+</div>
+</div>
+
+<div class="actions">
+<button onclick="goBack()">Back</button>
+<button onclick="resetAll()">Clear</button>
+</div>
+
+<div class="result" id="result"></div>
+
+</div>
+</div>
+
+
+<script>
+
+  let answers={}, currentStep=1, active="main";
+
+/* PERFECT IMAGE MAPPING */
+const imgs={
+male:"images/male.png",
+female:"images/women.jpg",
+teen:"images/sinchann.jpg",
+young:"images/young.jpg",
+adult:"images/adult.jpg",
+casual:"images/casual.png",
+school:"images/college.webp",
+office:"images/office.png",
+date:"images/date1.jpg",
+party:"images/party.jpg",
+aqua:"images/aqua.jpg",
+citrus:"images/citrus.webp",
+woody:"images/woody.jpg", 
+oud:"images/oud.webp",
+floral:"images/floral.jpg",
+summer:"images/summer.jpg",
+winter:"images/winter.jpg",
+rainy:"images/rainy.jpg",
+spring:"images/spring.jpg"
+};
+
+function bg(img){
+let main=document.getElementById("bgMain");
+let fade=document.getElementById("bgFade");
+
+if(active==="main"){
+fade.style.backgroundImage=`url(${img})`;
+fade.style.opacity=1;
+fade.classList.add("active");
+
+main.style.opacity=0;
+main.classList.remove("active");
+
+active="fade";
+}else{
+main.style.backgroundImage=`url(${img})`;
+main.style.opacity=1;
+main.classList.add("active");
+
+fade.style.opacity=0;
+fade.classList.remove("active");
+
+active="main";
+}
+}
+
+/* INTRO */
+setTimeout(()=>{
+document.getElementById("intro").style.opacity="0";
+setTimeout(()=>{
+document.getElementById("intro").style.display="none";
+document.getElementById("app").style.display="flex";
+},800);
+},1000);
+
+/* STEP LOGIC */
+function showStep(step){
+document.querySelectorAll(".question").forEach(q=>q.classList.remove("active"));
+document.getElementById("q"+step).classList.add("active");
+
+document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+document.getElementById("step"+step).classList.add("active");
+
+currentStep=step;
+updateProgress();
+}
+
+function updateProgress(){
+document.getElementById("progress").style.width=((currentStep-1)/4)*90+"%";
+}
+
+function selectOption(btn,step,val){
+answers["s"+step]=val;
+
+btn.parentElement.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+btn.classList.add("selected");
+
+document.getElementById("step"+step).classList.add("done");
+
+if(step<5){showStep(step+1);}
+}
+
+/* 🔥 UPDATED FINISH FUNCTION */
+async function finish(){
+
+try{
+const response = await fetch("http://localhost:5000/api/recommend",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify({
+gender: answers.s1,
+age: answers.s2,
+occasion: answers.s3,
+note: answers.s4,
+weather: answers.s5
+})
+});
+
+const data = await response.json();
+
+let res = `<h2>✨ Your Matches</h2><div class="result-grid">`;
+
+if(data.length === 0){
+res += `<p>No perfumes found 😔</p>`;
+}
+
+data.forEach(p=>{
+res += `
+<div class="card">
+<img src="${p.image}" alt="perfume">
+<h4>${p.name}</h4>
+<p>${p.brand}</p>
+</div>
+`;
+});
+
+res += `</div><br><button onclick="resetAll()">Find more</button>`;
+
+document.getElementById("result").innerHTML = res;
+document.getElementById("result").style.display = "block";
+
+}catch(err){
+console.error("Error:",err);
+document.getElementById("result").innerHTML = "⚠️ Error fetching data";
+}
+
+}
+
+function goBack(){if(currentStep>1){showStep(currentStep-1);}}
+
+function resetAll(){
+answers={};currentStep=1;
+
+document.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+document.querySelectorAll(".step").forEach(s=>s.classList.remove("active","done"));
+
+document.getElementById("progress").style.width="0%";
+
+showStep(1);
+document.getElementById("result").style.display="none";
+}
+
+</script>
+</body>
+</html>
